@@ -1,8 +1,9 @@
 
 export class SignallingChannel {
-    signalingChannel:WebSocket = new WebSocket('ws://localhost:8080/socket');
+    signalingChannel:WebSocket ;
 
     constructor(peerConnection: RTCPeerConnection) {
+        this.signalingChannel = new WebSocket('ws://localhost:8080/socket');
         this.signalingChannel.addEventListener('message', (message) => {
             console.log(`Received message: ${message}`);
             console.log(message);
@@ -13,7 +14,10 @@ export class SignallingChannel {
                 console.log("I got a candidate!");
                 console.log(obj.data);
                 try {
-                    peerConnection.addIceCandidate(new RTCIceCandidate(obj.data));
+                    peerConnection.addIceCandidate(new RTCIceCandidate(obj.data)).catch((err) => {
+                        console.log("error!");
+                        console.log(err);
+                    });
                 } catch(e:unknown) {
                     console.log("error!");
                     console.log(e);

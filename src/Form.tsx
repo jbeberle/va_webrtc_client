@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import Chats from "./Chats/Chats";
+import Chats from "./chat/Chats";
 
 
 export interface FormProps {

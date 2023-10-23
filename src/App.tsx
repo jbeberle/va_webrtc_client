@@ -4,27 +4,35 @@ import './App.css';
 import {SignallingChannel} from "./SignallingChannel";
 import {WebRtcChannel} from "./WebRtcChannel";
 import Form, {FormData} from "./Form";
-
-var rtcChannel: WebRtcChannel = new WebRtcChannel();
-let message = "";
-
-export async function makeCall() {
-  rtcChannel.initChannel();
-}
-
-export async function sendMessage(formData: FormData) {
-    rtcChannel.sendDataChannelMessage(formData.message);
-}
+import {WebrtcContext} from "./context/WebrtcContext";
 
 function alertMsg(formData: FormData) {
     var message:HTMLElement | null = document.getElementById('message');
     alert(formData.message)
 }
 function App() {
+    let message = "";
+    var rtcChannel: WebRtcChannel = new WebRtcChannel();
+
+
+    async function makeCall() {
+        rtcChannel.initChannel();
+    }
+
+     async function sendMessage(formData: FormData) {
+        rtcChannel.sendDataChannelMessage(formData.message);
+    }
+
     const [sendUserResponse, setSendUserResponse] = useState<string>("");
     // const rtcChannel: WebRtcChannel = new WebRtcChannel({onSubmit: sendMessage, sendUserResponse, setSendUserResponse});
 
     return (
+        <WebrtcContext.Provider
+            value={{
+                sendUserResponse,
+                setSendUserResponse
+            }}
+        >
     <div className="App">
       <header className="App-header">
           <button onClick={makeCall}>Initialize Channel</button>
@@ -35,6 +43,7 @@ function App() {
       <body>
       </body>
     </div>
+        </WebrtcContext.Provider>
   );
 }
 

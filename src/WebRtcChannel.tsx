@@ -3,28 +3,34 @@ import {Media} from "./Media";
 import {FormData, FormProps} from "./Form";
 
 export class WebRtcChannel {
-    iceConfiguration: RTCConfiguration = {
-        iceServers: [
-            {
-                urls: 'turn:jim.vmware.com:3478',
-                username: 'ejim',
-                credential: 'TannerAndTobey100!'
-            }
-        ]
-    }
+    iceConfiguration: RTCConfiguration;
 
-    peerConnection: RTCPeerConnection = new RTCPeerConnection(this.iceConfiguration);
-    signalingChannel: SignallingChannel = new SignallingChannel(this.peerConnection);
-    dataChannel: RTCDataChannel = this.peerConnection.createDataChannel("dataChannel");
+    peerConnection: RTCPeerConnection ;
+    signalingChannel: SignallingChannel ;
+    dataChannel: RTCDataChannel ;
     addMessage: FormProps | null = null;
+
 
     // constructor(addMessage: FormProps) {
     constructor() {
         // this.addMessage = addMessage;
+        this.iceConfiguration = {
+            iceServers: [
+                {
+                    urls: 'turn:jim.vmware.com:3478',
+                    username: 'ejim',
+                    credential: 'TannerAndTobey100!'
+                }
+            ]
+        }
 
+        this.peerConnection = new RTCPeerConnection(this.iceConfiguration);
+        this.signalingChannel = new SignallingChannel(this.peerConnection);
+        this.dataChannel = this.peerConnection.createDataChannel("dataChannel");
         this.dataChannel.onerror = function (error) {
             console.log("Error:", error);
         };
+
         this.dataChannel.onclose = function () {
             console.log("Data channel is closed");
         };
