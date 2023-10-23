@@ -1,4 +1,6 @@
 import {SignallingChannel} from "./SignallingChannel";
+import {Media} from "./Media";
+import {FormData, FormProps} from "./Form";
 
 export class WebRtcChannel {
     iceConfiguration: RTCConfiguration = {
@@ -14,8 +16,11 @@ export class WebRtcChannel {
     peerConnection: RTCPeerConnection = new RTCPeerConnection(this.iceConfiguration);
     signalingChannel: SignallingChannel = new SignallingChannel(this.peerConnection);
     dataChannel: RTCDataChannel = this.peerConnection.createDataChannel("dataChannel");
+    addMessage: FormProps | null = null;
 
+    // constructor(addMessage: FormProps) {
     constructor() {
+        // this.addMessage = addMessage;
 
         this.dataChannel.onerror = function (error) {
             console.log("Error:", error);
@@ -26,6 +31,7 @@ export class WebRtcChannel {
 
         this.dataChannel.onmessage = function (event) {
             console.log("Message:", event.data);
+            // addMessage.setSendUserResponse(event.data);
         };
 
         this.peerConnection.ondatachannel =  (event) => {
@@ -55,11 +61,11 @@ export class WebRtcChannel {
             // Handle error here
         });
 
+        const media: Media = new Media(this.peerConnection);
     }
 
     sendDataChannelMessage(message: string) {
         this.dataChannel.send(message);
-
     }
 }
 
